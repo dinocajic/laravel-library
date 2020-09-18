@@ -17,11 +17,12 @@ class BookReservationTest extends TestCase
             'author' => 'Dino Cajic',
         ]);
 
-        // Assert that we got a successful response
-        $response->assertOk();
+        $book = Book::first();
 
         // After the post hits, we expect that our database will have a record for this book
         $this->assertCount(1, Book::all());
+
+        $response->assertRedirect('/books/' . $book->id);
     }
 
     public function test_a_title_is_required()
@@ -63,6 +64,8 @@ class BookReservationTest extends TestCase
 
         $this->assertEquals('New Title', Book::first()->title);
         $this->assertEquals('New Author', Book::first()->author);
+
+        $response->assertRedirect('/books/' . $book->id);
     }
 
     public function test_a_book_can_be_deleted()
@@ -84,5 +87,8 @@ class BookReservationTest extends TestCase
 
         // Make sure that it has been deleted
         $this->assertCount(0, Book::all());
+
+        // Test to make sure that the user is redirected to /book
+        $response->assertRedirect('/books');
     }
 }
