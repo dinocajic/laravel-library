@@ -10,6 +10,13 @@ class Book extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title', 'author'
+        'title', 'author_id'
     ];
+
+    public function setAuthorIdAttribute($author)
+    {
+        $this->attributes['author_id'] = (Author::firstOrCreate([
+            'name' => $author
+        ]))->id;
+    }
 }

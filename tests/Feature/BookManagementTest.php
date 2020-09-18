@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Author;
 use App\Models\Book;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -12,10 +13,7 @@ class BookManagementTest extends TestCase
 
     public function test_a_book_can_be_added_to_the_library()
     {
-        $response = $this->post('/books', [
-            'title'  => 'An Illustrative Introduction to Algorithms',
-            'author' => 'Dino Cajic',
-        ]);
+        $response = $this->post('/books', $this->data());
 
         $book = Book::first();
 
@@ -37,33 +35,27 @@ class BookManagementTest extends TestCase
 
     public function test_the_author_is_required()
     {
-        $response = $this->post('/books', [
-            'title'  => 'An Illustrative Introduction to Algorithms',
-            'author' => '',
-        ]);
+        $response = $this->post('/books', array_merge($this->data(), ['author_id' => '']) );
 
-        $response->assertSessionHasErrors('author');
+        $response->assertSessionHasErrors('author_id');
     }
 
     public function test_a_book_can_be_updated()
     {
         // First add a book
         // We already know that this works from our first test
-        $this->post('/books', [
-            'title'  => 'An Illustrative Introduction to Algorithms',
-            'author' => 'Dino Cajic',
-        ]);
+        $this->post('/books', $this->data());
 
         $book = Book::first();
 
         // Now modify the book
         $response = $this->patch('/books/' . $book->id, [
             'title' => 'New Title',
-            'author' => 'New Author',
+            'author_id' => 'New Author',
         ]);
 
         $this->assertEquals('New Title', Book::first()->title);
-        $this->assertEquals('New Author', Book::first()->author);
+        $this->assertEquals(2, Book::first()->author_id);
 
         $response->assertRedirect('/books/' . $book->id);
     }
@@ -72,10 +64,7 @@ class BookManagementTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $this->post('/books', [
-            'title'  => 'An Illustrative Introduction to Algorithms',
-            'author' => 'Dino Cajic',
-        ]);
+        $this->post('/books', $this->data());
 
         $book = Book::first();
 
@@ -90,5 +79,33 @@ class BookManagementTest extends TestCase
 
         // Test to make sure that the user is redirected to /book
         $response->assertRedirect('/books');
+    }
+
+    public function test_a_new_author_is_automatically_added()
+    {
+
+        $this->withoutExceptionHandling();
+
+        $this->post('/books', [
+            'title'  => 'An Illustrative Introduction to Algorithms',
+            'author_id' => 'Dino Cajic',
+        ]);
+
+        $book = Book::first();
+        $author = Author::first();
+
+        $this->assertEquals( $author->id, $book->author_id );
+        $this->assertCount(1, Author::all());
+    }
+
+    /**
+     * @return string[]
+     */
+    private function data(): array
+    {
+        return [
+            'title' => 'An Illustrative Introduction to Algorithms',
+            'author_id' => 'Dino Cajic',
+        ];
     }
 }
