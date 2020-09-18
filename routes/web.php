@@ -15,3 +15,4 @@ use App\Http\Controllers\BookController;
 */
 Route::post('/book', [BookController::class, 'store']);
 Route::patch('/book/{book}', [BookController::class, 'update']);
+Route::delete('/book/{book}', [BookController::class, 'destroy']);

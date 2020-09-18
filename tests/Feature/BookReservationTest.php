@@ -10,11 +10,8 @@ class BookReservationTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
     public function test_a_book_can_be_added_to_the_library()
     {
-        $this->withoutExceptionHandling();
-
         $response = $this->post('/book', [
             'title'  => 'An Illustrative Introduction to Algorithms',
             'author' => 'Dino Cajic',
@@ -27,8 +24,8 @@ class BookReservationTest extends TestCase
         $this->assertCount(1, Book::all());
     }
 
-    public function test_a_title_is_required() {
-
+    public function test_a_title_is_required()
+    {
         $response = $this->post('/book', [
             'title'  => '',
             'author' => 'Dino Cajic',
@@ -37,8 +34,8 @@ class BookReservationTest extends TestCase
         $response->assertSessionHasErrors('title');
     }
 
-    public function test_the_author_is_required() {
-
+    public function test_the_author_is_required()
+    {
         $response = $this->post('/book', [
             'title'  => 'An Illustrative Introduction to Algorithms',
             'author' => '',
@@ -47,10 +44,8 @@ class BookReservationTest extends TestCase
         $response->assertSessionHasErrors('author');
     }
 
-    public function test_a_book_can_be_updated() {
-
-        $this->withoutExceptionHandling();
-
+    public function test_a_book_can_be_updated()
+    {
         // First add a book
         // We already know that this works from our first test
         $this->post('/book', [
@@ -68,5 +63,26 @@ class BookReservationTest extends TestCase
 
         $this->assertEquals('New Title', Book::first()->title);
         $this->assertEquals('New Author', Book::first()->author);
+    }
+
+    public function test_a_book_can_be_deleted()
+    {
+        $this->withoutExceptionHandling();
+
+        $this->post('/book', [
+            'title'  => 'An Illustrative Introduction to Algorithms',
+            'author' => 'Dino Cajic',
+        ]);
+
+        $book = Book::first();
+
+        // Make sure the book has been added to the DB table
+        $this->assertCount(1, Book::all());
+
+        // Now delete a book that's been added
+        $response = $this->delete('/book/' . $book->id);
+
+        // Make sure that it has been deleted
+        $this->assertCount(0, Book::all());
     }
 }

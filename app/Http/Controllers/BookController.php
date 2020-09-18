@@ -18,6 +18,11 @@ class BookController extends Controller
         $book->update( $this->validateRequest() );
     }
 
+    public function destroy(Book $book): void
+    {
+        $book->delete();
+    }
+
     /**
      * @return array
      */
