@@ -13,6 +13,6 @@ use App\Http\Controllers\BookController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::post('/book', [BookController::class, 'store']);
-Route::patch('/book/{book}', [BookController::class, 'update']);
-Route::delete('/book/{book}', [BookController::class, 'destroy']);
+Route::post('/books',          [BookController::class, 'store'])->name('books.store');
+Route::patch('/books/{book}',  [BookController::class, 'update'])->name('books.update');
+Route::delete('/books/{book}', [BookController::class, 'destroy'])->name('books.destroy');

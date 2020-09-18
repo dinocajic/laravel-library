@@ -12,7 +12,7 @@ class BookReservationTest extends TestCase
 
     public function test_a_book_can_be_added_to_the_library()
     {
-        $response = $this->post('/book', [
+        $response = $this->post('/books', [
             'title'  => 'An Illustrative Introduction to Algorithms',
             'author' => 'Dino Cajic',
         ]);
@@ -26,7 +26,7 @@ class BookReservationTest extends TestCase
 
     public function test_a_title_is_required()
     {
-        $response = $this->post('/book', [
+        $response = $this->post('/books', [
             'title'  => '',
             'author' => 'Dino Cajic',
         ]);
@@ -36,7 +36,7 @@ class BookReservationTest extends TestCase
 
     public function test_the_author_is_required()
     {
-        $response = $this->post('/book', [
+        $response = $this->post('/books', [
             'title'  => 'An Illustrative Introduction to Algorithms',
             'author' => '',
         ]);
@@ -48,7 +48,7 @@ class BookReservationTest extends TestCase
     {
         // First add a book
         // We already know that this works from our first test
-        $this->post('/book', [
+        $this->post('/books', [
             'title'  => 'An Illustrative Introduction to Algorithms',
             'author' => 'Dino Cajic',
         ]);
@@ -56,7 +56,7 @@ class BookReservationTest extends TestCase
         $book = Book::first();
 
         // Now modify the book
-        $response = $this->patch('/book/' . $book->id, [
+        $response = $this->patch('/books/' . $book->id, [
             'title' => 'New Title',
             'author' => 'New Author',
         ]);
@@ -69,7 +69,7 @@ class BookReservationTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $this->post('/book', [
+        $this->post('/books', [
             'title'  => 'An Illustrative Introduction to Algorithms',
             'author' => 'Dino Cajic',
         ]);
@@ -80,7 +80,7 @@ class BookReservationTest extends TestCase
         $this->assertCount(1, Book::all());
 
         // Now delete a book that's been added
-        $response = $this->delete('/book/' . $book->id);
+        $response = $this->delete('/books/' . $book->id);
 
         // Make sure that it has been deleted
         $this->assertCount(0, Book::all());
