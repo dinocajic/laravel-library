@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\AuthorController;
+use App\Http\Controllers\CheckinBookController;
+use App\Http\Controllers\CheckoutBookController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookController;
 
@@ -19,3 +22,11 @@ Route::patch('/books/{book}',  [BookController::class, 'update'])->name('books.u
 Route::delete('/books/{book}', [BookController::class, 'destroy'])->name('books.destroy');
 
 Route::post('/authors', [AuthorController::class, 'store'])->name('author.store');
+
+Route::post('/checkout/{book}', [CheckoutBookController::class, 'store'])->name('checkout.store');
+
+Route::post('/checkin/{book}', [CheckinBookController::class, 'store'])->name('checkin.store');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

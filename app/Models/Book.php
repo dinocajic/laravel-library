@@ -20,7 +20,7 @@ class Book extends Model
         ]))->id;
     }
 
-    public function checkout(User $user)
+    public function checkout($user)
     {
         $this->reservations()->create([
             'user_id' => $user->id,
@@ -29,7 +29,7 @@ class Book extends Model
         ]);
     }
 
-    public function checkin(User $user)
+    public function checkin($user)
     {
         $reservation = $this->reservations()->where('user_id', $user->id)
             ->whereNotNull('checked_out_at')
