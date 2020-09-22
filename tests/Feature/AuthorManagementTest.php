@@ -14,10 +14,7 @@ class AuthorManagementTest extends TestCase
 
     public function test_an_author_can_be_created()
     {
-        $response = $this->post('/authors', [
-            'name' => 'Dino Cajic',
-            'dob' => '12/12/2020',
-        ]);
+        $response = $this->post('/authors', $this->data());
 
         $author = Author::all();
 
@@ -29,5 +26,27 @@ class AuthorManagementTest extends TestCase
         // Check to make sure that the date was parsed in the correct format
         // Since this is a carbon instance, we can use the format helper
         $this->assertEquals('2020/12/12', $author->first()->dob->format('Y/d/m'));
+    }
+
+    public function test_a_name_is_required()
+    {
+        $response = $this->post('/authors', array_merge($this->data(), ['name' => '']));
+
+        $response->assertSessionHasErrors('name');
+    }
+
+    public function test_the_dob_is_required()
+    {
+        $response = $this->post('/authors', array_merge($this->data(), ['dob' => '']));
+
+        $response->assertSessionHasErrors('dob');
+    }
+
+    private function data(): array
+    {
+        return [
+            'name' => 'Dino Cajic',
+            'dob' => '12/12/2020',
+        ];
     }
 }
