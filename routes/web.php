@@ -21,7 +21,8 @@ Route::post('/books',          [BookController::class, 'store'])->name('books.st
 Route::patch('/books/{book}',  [BookController::class, 'update'])->name('books.update');
 Route::delete('/books/{book}', [BookController::class, 'destroy'])->name('books.destroy');
 
-Route::post('/authors', [AuthorController::class, 'store'])->name('author.store');
+Route::get('/authors/create', [AuthorController::class, 'create'])->name('authors.create');
+Route::post('/authors', [AuthorController::class, 'store'])->name('authors.store');
 
 Route::post('/checkout/{book}', [CheckoutBookController::class, 'store'])->name('checkout.store');
 
